@@ -1,5 +1,6 @@
 use std::{fmt::Error, io, vec};
 
+use cli::command::CLI;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use ratatui::{
     buffer::Buffer,
@@ -11,6 +12,7 @@ use ratatui::{
     DefaultTerminal, Frame,
 };
 
+mod cli;
 mod data;
 mod ui;
 
@@ -92,9 +94,11 @@ impl Widget for &App {
 }
 
 fn main() -> io::Result<()> {
-    let mut terminal = ratatui::init();
-    terminal.clear()?;
-    let app_result = App::default().run(&mut terminal);
-    ratatui::restore();
-    app_result
+    CLI::run();
+    // let mut terminal = ratatui::init();
+    // terminal.clear()?;
+    // let app_result = App::default().run(&mut terminal);
+    // ratatui::restore();
+    // app_result
+    Ok(())
 }
