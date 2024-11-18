@@ -11,3 +11,4 @@ tokio = { version = "1", features = ["full"] }
 chrono = "0.4.38"
 reqwest = "0.12.9"
 octocrab = "0.42.0"
+clap = "4.5.21"
