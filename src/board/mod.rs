@@ -1,6 +1,9 @@
 //! Issue board
 //! 
 
+use chrono::{DateTime, Local};
+use std::slice::Iter;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct IssueBoard {
   pub(crate) issues: Vec<Issue>
@@ -13,7 +16,7 @@ pub struct Issue {
   pub summary: String,
   pub url: String,
   pub recommended: String,
-  // pub date: Option<DateTime<Local>>
+  pub date: Option<DateTime<Local>>
 }
 
 impl IssueBoard {
@@ -22,3 +25,4 @@ impl IssueBoard {
     self.issues.iter()
   }
 }
+
