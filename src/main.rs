@@ -11,8 +11,8 @@ use ratatui::{
     DefaultTerminal, Frame,
 };
 
+mod data;
 mod ui;
-mod board;
 
 /* Implementing the Widget traits allows the code related to rendering to be rendered */
 #[derive(Debug, Default)]

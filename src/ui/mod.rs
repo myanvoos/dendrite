@@ -6,6 +6,8 @@ use tuirealm::{
   terminal::TerminalBridge, Application, AttrValue, Attribute, NoUserEvent, StateValue, Update
 };
 
+pub mod components;
+
 // Defines the identifiers for components
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub enum Id {
