@@ -1,6 +1,7 @@
-use std::error::Error;
+use std::{error::Error};
+use clap::{Arg, ArgMatches, Command, Parser};
 
-use clap::{builder::Str, Arg, ArgMatches, Command, Parser};
+use crate::utils::relative_to_absolute_path;
 
 #[derive(Parser, Debug)]
 #[command(name = "dendrite")]
@@ -14,11 +15,8 @@ impl CLI {
         match matches.subcommand() {
             Some(("local", local_matches)) => {
                 if local_matches.contains_id("path") {
-                    let local_path: String = local_matches
-                        .get_one::<String>("path")
-                        .expect("contains_id")
-                        .to_string();
-                    println!("Processing file path {:?}...", local_path);
+                    let absolute_path = relative_to_absolute_path(local_matches);
+                    println!("Processing file path {:?}...", absolute_path);
 
                     // process_local_path(&local_path)
                 }
@@ -34,7 +32,7 @@ impl CLI {
                   // process_local_path(&local_path)
                 }
             }
-            _ => todo!(),
+            _ => unreachable!()
         }
         Ok(())
     }

@@ -15,6 +15,7 @@ use ratatui::{
 mod cli;
 mod data;
 mod ui;
+mod utils;
 
 /* Implementing the Widget traits allows the code related to rendering to be rendered */
 #[derive(Debug, Default)]
