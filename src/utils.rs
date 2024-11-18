@@ -4,12 +4,7 @@ use clap::ArgMatches;
 
 // Converts relative paths to absolute paths for consistency across the application
 // If the URL has './' (example: ./src/dendrite), then remove it
-pub fn relative_to_absolute_path(local_matches: &ArgMatches) -> PathBuf {
-  let mut local_path: String = local_matches
-    .get_one::<String>("path")
-    .expect("contains_id")
-    .to_string();
-
+pub fn relative_to_absolute_path(local_path: &String) -> PathBuf {
   let current_path = env::current_dir().unwrap_or_default();
   let mut absolute_path = PathBuf::from(current_path);
 
@@ -23,7 +18,6 @@ pub fn relative_to_absolute_path(local_matches: &ArgMatches) -> PathBuf {
 }
 
 // Validate passed URL for remote repository access
-pub fn validate_url(input: &PathBuf) -> Result<url::Url, url::ParseError> {
-  let input_str = input.to_string_lossy();
-  Url::parse(&input_str)
+pub fn validate_url(input: &String) -> Result<url::Url, url::ParseError> {
+  Url::parse(&input)
 }

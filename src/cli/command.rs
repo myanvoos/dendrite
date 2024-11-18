@@ -1,7 +1,7 @@
 use std::{error::Error};
 use clap::{Arg, ArgMatches, Command, Parser};
 
-use crate::utils::relative_to_absolute_path;
+use crate::utils::{relative_to_absolute_path, validate_url};
 
 #[derive(Parser, Debug)]
 #[command(name = "dendrite")]
@@ -15,7 +15,11 @@ impl CLI {
         match matches.subcommand() {
             Some(("local", local_matches)) => {
                 if local_matches.contains_id("path") {
-                    let absolute_path = relative_to_absolute_path(local_matches);
+                    let local_path: String = local_matches
+                        .get_one::<String>("path")
+                        .expect("contains_id")
+                        .to_string();
+                    let absolute_path = relative_to_absolute_path(&local_path);
                     println!("Processing file path {:?}...", absolute_path);
 
                     // process_local_path(&local_path)
@@ -23,13 +27,26 @@ impl CLI {
             },
             Some(("remote", remote_matches)) => {
                 if remote_matches.contains_id("url") {
-                  let remote_path: String = remote_matches
+                    let remote_path: String = remote_matches
                       .get_one::<String>("url")
                       .expect("contains_id")
                       .to_string();
-                  println!("Processing file path {:?}...", remote_path);
+                    
+                    match validate_url(&remote_path) {
+                        Ok(url) => {
+                            println!("Processing file path {:?}...", url);
 
-                  // process_local_path(&local_path)
+                            // process_local_path(&local_path)
+                        },
+                        Err(err) => {
+                            eprintln!(
+                                "Error: The provided input '{}' is not a valid URL. Details: {}",
+                                remote_path,
+                                err
+                            )
+                        },
+                        _ => unreachable!()
+                    }
                 }
             }
             _ => unreachable!()
