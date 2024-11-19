@@ -361,8 +361,10 @@ dependencies = [
  "octocrab",
  "ratatui 0.29.0",
  "reqwest",
+ "serde",
  "tokio",
  "tuirealm",
+ "url",
 ]
 
 [[package]]

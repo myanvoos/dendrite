@@ -1,23 +1,33 @@
-use std::{env, path::{Path, PathBuf}};
-use url::{Url, ParseError};
-use clap::ArgMatches;
+//! Utilities
+//! 
+//! These are utility functions, mainly path handling for now
 
-// Converts relative paths to absolute paths for consistency across the application
-// If the URL has './' (example: ./src/dendrite), then remove it
-pub fn relative_to_absolute_path(local_path: &String) -> PathBuf {
-  let current_path = env::current_dir().unwrap_or_default();
-  let mut absolute_path = PathBuf::from(current_path);
+use std::{env, fs::canonicalize, path::{Path, PathBuf}};
+use url::Url;
 
-  if local_path.starts_with("./") {
-    let stripped_path = local_path.strip_prefix("./").unwrap_or(&local_path);
-    absolute_path.push(stripped_path);
-  } else {
-    absolute_path.push(local_path);
-  }
-  absolute_path
+// Checks if a path is relative
+pub fn is_relative_path(local_path: &String) -> bool {
+  return local_path.starts_with("./") || local_path.starts_with("../") || !Path::new(local_path).is_absolute()
 }
 
-// Validate passed URL for remote repository access
+// Validates passed URL for remote repository access
 pub fn validate_url(input: &String) -> Result<url::Url, url::ParseError> {
   Url::parse(&input)
+}
+
+// Converts relative paths to absolute paths for consistency across the application
+pub fn relative_to_absolute_path(local_path: &String) -> Result<PathBuf, std::io::Error> {
+  let current_path = env::current_dir().unwrap_or_else(|e| {
+    eprintln!("Error getting current directory: {}", e);
+    PathBuf::new()
+  });
+  let mut absolute_path = PathBuf::from(current_path);
+
+  if is_relative_path(local_path) {
+    absolute_path.push(local_path);
+  } else {
+    absolute_path = PathBuf::from(local_path);
+  }
+
+  canonicalize(absolute_path)
 }

@@ -12,3 +12,5 @@ chrono = "0.4.38"
 reqwest = "0.12.9"
 octocrab = "0.42.0"
 clap = { version = "4.5.21", features = ["derive"] }
+serde = "1.0.215"
+url = "2.5.3"

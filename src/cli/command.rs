@@ -1,5 +1,13 @@
-use std::{error::Error};
+//! CLI commands
+//!
+//! Commands for the Dendrite CLI tool, using the Rust crate `clap`.
+//! Structure:
+//!     `dendrite local [path]` -- shorthand --> `dendrite -l [path]`
+//!     `dendrite remote [remote-url]` -- shorthand --> `dendrite -r [remote-url]`
+//!     `dendrite help`, -- shorthand --> `dendrite -h`
+
 use clap::{Arg, ArgMatches, Command, Parser};
+use std::{error::Error, path::PathBuf};
 
 use crate::utils::{relative_to_absolute_path, validate_url};
 
@@ -19,37 +27,41 @@ impl CLI {
                         .get_one::<String>("path")
                         .expect("contains_id")
                         .to_string();
-                    let absolute_path = relative_to_absolute_path(&local_path);
+
+                    let absolute_path =
+                        relative_to_absolute_path(&local_path).unwrap_or_else(|e| {
+                            eprintln!("Error converting relative path to absolute path: {}", e);
+                            PathBuf::from("/")
+                        });
                     println!("Processing file path {:?}...", absolute_path);
 
                     // process_local_path(&local_path)
                 }
-            },
+            }
             Some(("remote", remote_matches)) => {
                 if remote_matches.contains_id("url") {
                     let remote_path: String = remote_matches
-                      .get_one::<String>("url")
-                      .expect("contains_id")
-                      .to_string();
-                    
-                    match validate_url(&remote_path) {
-                        Ok(url) => {
-                            println!("Processing file path {:?}...", url);
+                        .get_one::<String>("url")
+                        .expect("contains_id")
+                        .to_string();
 
-                            // process_local_path(&local_path)
-                        },
+                    match validate_url(&remote_path) {
+                        Ok(raw_url) => {
+                            let url = raw_url.as_str();
+                            println!("Processing remote repository {:?}...", url);
+
+                            // process_remote_path(&remote_path)
+                        }
                         Err(err) => {
                             eprintln!(
                                 "Error: The provided input '{}' is not a valid URL. Details: {}",
-                                remote_path,
-                                err
+                                remote_path, err
                             )
-                        },
-                        _ => unreachable!()
+                        }
                     }
                 }
             }
-            _ => unreachable!()
+            _ => unreachable!(),
         }
         Ok(())
     }
@@ -63,6 +75,7 @@ impl CLI {
             .subcommand(
                 Command::new("local")
                     .about("Visualise a local codebase")
+                    .short_flag('l')
                     .arg(
                         Arg::new("path")
                             .required(true)
@@ -73,6 +86,7 @@ impl CLI {
             .subcommand(
                 Command::new("remote")
                     .about("Visualise a remote repository")
+                    .short_flag('r')
                     .arg(
                         Arg::new("url")
                             .required(true)
