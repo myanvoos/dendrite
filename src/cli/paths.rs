@@ -11,14 +11,30 @@ pub fn process_local_path(local_path: &String) {
   // UI draw()
 }
 
+
+/// This handler processes a remote repository path by distinguishing
+/// between supported domain types (e.g., GitHub, GitLab, Bitbucket) 
+/// and executing the appropriate logic for each domain.
+///
+/// # Parameters
+/// - `host`: The host information of the remote URL (e.g., "github.com").
+/// - `owner`: The owner of the repository.
+/// - `repo`: The repository name.
+///
+/// # Supported Hosts
+/// - `github.com`
+/// - `gitlab.com`
+/// - `bitbucket.org`
+///
+/// For unsupported hosts, a fallback is provided to log an error.
+///
+/// IPv4 and IPv6 address handling is included but not actively used.
 pub fn process_remote_path(host: &Host<&str>, owner: &String, repo: &String) {
-  println!("{}", owner);
-  todo!();
   match host {
     Host::Domain(domain) => match  *domain {
         "github.com" => {
           println!("Processing GitHub repository...");
-          todo!()
+          fetch_github
         },
         "gitlab.com" => {
           println!("Processing GitLab repository...");
@@ -32,8 +48,6 @@ pub fn process_remote_path(host: &Host<&str>, owner: &String, repo: &String) {
           println!("Unsupported domain: {}", domain);
         }
     },
-    // Host reinforces Ipv4 and Ipv6 in its pattern matching. 
-    // We're not actually using them.
     Host::Ipv4(addr) => {
       println!("IPv4 address: {}", addr);
     },

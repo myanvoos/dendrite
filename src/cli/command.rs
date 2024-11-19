@@ -1,10 +1,13 @@
-//! CLI commands
-//!
 //! Commands for the Dendrite CLI tool, using the Rust crate `clap`.
-//! Structure:
-//!     `dendrite local [path]` -- shorthand --> `dendrite -l [path]`
-//!     `dendrite remote [remote-url]` -- shorthand --> `dendrite -r [remote-url]`
-//!     `dendrite help`, -- shorthand --> `dendrite -h`
+//! 
+//! ## Command Structure
+//! - `dendrite local [path]`: Visualize a local repository.
+//!     - Shorthand: `dendrite -l [path]`
+//! - `dendrite remote [remote-url]`: Visualize a remote GitHub repository.
+//!     - Shorthand: `dendrite -r [remote-url]`
+//! - `dendrite help`: Displays help information for the CLI.
+//!     - Shorthand: `dendrite -h`
+//! 
 
 use clap::{Arg, ArgMatches, Command, Parser};
 use std::{error::Error, path::PathBuf};
@@ -17,6 +20,18 @@ use crate::{cli::paths::{process_local_path, process_remote_path}, utils::{extra
 pub struct CLI;
 
 impl CLI {
+
+    /// This function parses the command-line arguments, determines the appropriate
+    /// subcommand to execute, and invokes the corresponding handler for either
+    /// local or remote repositories.
+    ///
+    /// # Returns
+    /// - `Ok(())` on successful execution.
+    /// - `Err(Box<dyn Error>)` if an error occurs.
+    ///
+    /// # Errors
+    /// - Fails if the path or URL is invalid.
+    /// - Handles unexpected errors with `stderr` logs.
     pub fn run() -> Result<(), Box<dyn Error>> {
         let matches = CLI::parse_args();
 
@@ -69,6 +84,11 @@ impl CLI {
         Ok(())
     }
 
+    /// Defines the structure of the CLI, including subcommands and their arguments.
+    ///
+    /// # Returns
+    /// An `ArgMatches` object containing the parsed command-line arguments.
+    /// 
     fn parse_args() -> ArgMatches {
         Command::new("dendrite")
             .version("0.1.0")

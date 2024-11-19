@@ -33,6 +33,7 @@ pub fn relative_to_absolute_path(local_path: &String) -> Result<PathBuf, std::io
   canonicalize(absolute_path)
 }
 
+// Extract the owner and the repo information from the path string
 pub fn extract_owner_repo(path: &str) -> (String, String) {
   let parts: Vec<&str> = path.trim_matches('/').split('/').collect();
   println!("{:?}", parts);
