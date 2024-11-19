@@ -1,4 +1,4 @@
-use std::{fmt::Error, io, vec};
+use std::{io, vec};
 
 use cli::command::CLI;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};

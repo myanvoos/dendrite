@@ -9,7 +9,7 @@
 use clap::{Arg, ArgMatches, Command, Parser};
 use std::{error::Error, path::PathBuf};
 
-use crate::utils::{relative_to_absolute_path, validate_url};
+use crate::{cli::paths::{process_local_path, process_remote_path}, utils::{extract_owner_repo, relative_to_absolute_path, validate_url}};
 
 #[derive(Parser, Debug)]
 #[command(name = "dendrite")]
@@ -35,7 +35,7 @@ impl CLI {
                         });
                     println!("Processing file path {:?}...", absolute_path);
 
-                    // process_local_path(&local_path)
+                    process_local_path(&local_path);
                 }
             }
             Some(("remote", remote_matches)) => {
@@ -47,10 +47,13 @@ impl CLI {
 
                     match validate_url(&remote_path) {
                         Ok(raw_url) => {
+                            println!("{:?}", raw_url);
+                            let host = raw_url.host().unwrap();
+                            let ( owner, repo ) = extract_owner_repo(raw_url.path());
                             let url = raw_url.as_str();
                             println!("Processing remote repository {:?}...", url);
 
-                            // process_remote_path(&remote_path)
+                            process_remote_path(&host, &owner, &repo);
                         }
                         Err(err) => {
                             eprintln!(

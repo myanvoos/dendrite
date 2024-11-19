@@ -2,6 +2,7 @@
 //! 
 //! These are utility functions, mainly path handling for now
 
+use core::panic;
 use std::{env, fs::canonicalize, path::{Path, PathBuf}};
 use url::Url;
 
@@ -30,4 +31,16 @@ pub fn relative_to_absolute_path(local_path: &String) -> Result<PathBuf, std::io
   }
 
   canonicalize(absolute_path)
+}
+
+pub fn extract_owner_repo(path: &str) -> (String, String) {
+  let parts: Vec<&str> = path.trim_matches('/').split('/').collect();
+  println!("{:?}", parts);
+  if parts.len() >= 2 {
+    let owner = parts[0].to_string();
+    let repo = parts[1].to_string();
+    ( owner, repo )
+  } else {
+    panic!("Invalid path: {}. An example of a valid path is https://github.com/myanvoos/dendrite", path);
+  }
 }
