@@ -4,7 +4,7 @@
 
 use octocrab::{models::Repository, Error};
 use url::Host;
-use crate::data::github::{self, fetch_github};
+use crate::data::fetch::{self, fetch_github};
 
 pub fn process_local_path(local_path: &String) {
   todo!()
