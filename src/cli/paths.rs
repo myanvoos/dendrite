@@ -36,30 +36,30 @@ pub async fn process_remote_path(host: &Host<&str>, owner: &String, repo: &Strin
     Host::Domain(domain) => match  *domain {
         "github.com" => {
           println!("...Identified the remote repository as a GitHub repository");
-          let github_repo = match fetch_github(owner, repo).await {
+          
+          match fetch_github(owner, repo).await {
             Ok(repo) => {
-              println!("...Fetched repository details: {:?}", repo);
+              println!("...Fetched repository details: {:?}\n\n\n", repo);
             },
             Err(e) => {
               match e {
-                Error::Http { source, backtrace } => {
+                Error::Http { source, backtrace: _ } => {
                   eprintln!("Encountered HTTP error: {:?}", source);
                 }
-                Error::Json { source, backtrace } => {
+                Error::Json { source, backtrace: _ } => {
                   eprintln!("Encountered JSON error: {:?}", source);
                 }
-                Error::JWT { source, backtrace } => {
+                Error::JWT { source, backtrace: _ } => {
                   eprintln!("Encountered a JWT error: {:?}", source);
                 }
-                Error::GitHub { source, backtrace } => {
+                Error::GitHub { source, backtrace: _ } => {
                   eprintln!("Encountered a GitHub error: {:?}", source);
                 }
                 _ => {
                   eprintln!("Unknown error: {:?}", e)
                 }
               }
-            },
-            _ => unreachable!()
+            }
           };
         },
         "gitlab.com" => {
