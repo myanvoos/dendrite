@@ -2,6 +2,7 @@
 //! 
 //! Provides two main functions to process local and remote paths. If remote, calls the appropriate handler to fetch the repository
 
+use octocrab::{models::Repository, Error};
 use url::Host;
 use crate::data::github::{self, fetch_github};
 
@@ -34,15 +35,39 @@ pub async fn process_remote_path(host: &Host<&str>, owner: &String, repo: &Strin
   match host {
     Host::Domain(domain) => match  *domain {
         "github.com" => {
-          println!("Processing GitHub repository...");
-          fetch_github(owner, repo).await;
+          println!("...Identified the remote repository as a GitHub repository");
+          let github_repo = match fetch_github(owner, repo).await {
+            Ok(repo) => {
+              println!("...Fetched repository details: {:?}", repo);
+            },
+            Err(e) => {
+              match e {
+                Error::Http { source, backtrace } => {
+                  eprintln!("Encountered HTTP error: {:?}", source);
+                }
+                Error::Json { source, backtrace } => {
+                  eprintln!("Encountered JSON error: {:?}", source);
+                }
+                Error::JWT { source, backtrace } => {
+                  eprintln!("Encountered a JWT error: {:?}", source);
+                }
+                Error::GitHub { source, backtrace } => {
+                  eprintln!("Encountered a GitHub error: {:?}", source);
+                }
+                _ => {
+                  eprintln!("Unknown error: {:?}", e)
+                }
+              }
+            },
+            _ => unreachable!()
+          };
         },
         "gitlab.com" => {
-          println!("Processing GitLab repository...");
+          println!("...Identified the remote repository as a GitLab repository");
           todo!()
         },
         "bitbucket.org" => {
-          println!("Processing Bitbucket repository...");
+          println!("...Identified the remote repository as a Bitbucket repository");
           todo!()
         },
         _ => {

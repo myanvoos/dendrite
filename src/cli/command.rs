@@ -34,6 +34,7 @@ impl CLI {
     /// - Handles unexpected errors with `stderr` logs.
     pub async fn run() -> Result<(), Box<dyn Error>> {
         let matches = CLI::parse_args();
+        println!();
 
         match matches.subcommand() {
             Some(("local", local_matches)) => {
@@ -48,7 +49,7 @@ impl CLI {
                             eprintln!("Error converting relative path to absolute path: {}", e);
                             PathBuf::from("/")
                         });
-                    println!("Processing file path {:?}...", absolute_path);
+                    println!("...Processing file path {:?}", absolute_path);
 
                     process_local_path(&local_path);
                 }
@@ -62,11 +63,10 @@ impl CLI {
 
                     match validate_url(&remote_path) {
                         Ok(raw_url) => {
-                            println!("{:?}", raw_url);
                             let host = raw_url.host().unwrap();
                             let ( owner, repo ) = extract_owner_repo(raw_url.path());
                             let url = raw_url.as_str();
-                            println!("Processing remote repository {:?}...", url);
+                            println!("...Processing remote repository {:?}", url);
 
                             process_remote_path(&host, &owner, &repo).await;
                         }
