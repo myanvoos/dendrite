@@ -32,7 +32,7 @@ impl CLI {
     /// # Errors
     /// - Fails if the path or URL is invalid.
     /// - Handles unexpected errors with `stderr` logs.
-    pub fn run() -> Result<(), Box<dyn Error>> {
+    pub async fn run() -> Result<(), Box<dyn Error>> {
         let matches = CLI::parse_args();
 
         match matches.subcommand() {
@@ -68,7 +68,7 @@ impl CLI {
                             let url = raw_url.as_str();
                             println!("Processing remote repository {:?}...", url);
 
-                            process_remote_path(&host, &owner, &repo);
+                            process_remote_path(&host, &owner, &repo).await;
                         }
                         Err(err) => {
                             eprintln!(

@@ -94,8 +94,9 @@ impl Widget for &App {
     }
 }
 
-fn main() -> io::Result<()> {
-    CLI::run();
+#[tokio::main]
+async fn main() -> io::Result<()> {
+    CLI::run().await;
     // let mut terminal = ratatui::init();
     // terminal.clear()?;
     // let app_result = App::default().run(&mut terminal);

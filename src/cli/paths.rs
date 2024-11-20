@@ -1,8 +1,9 @@
 //! Paths
 //! 
-//! Provides two main functions to process local and remote paths. If remote, calls Octocat API to fetch the repository
+//! Provides two main functions to process local and remote paths. If remote, calls the appropriate handler to fetch the repository
 
 use url::Host;
+use crate::data::github::{self, fetch_github};
 
 pub fn process_local_path(local_path: &String) {
   todo!()
@@ -29,12 +30,12 @@ pub fn process_local_path(local_path: &String) {
 /// For unsupported hosts, a fallback is provided to log an error.
 ///
 /// IPv4 and IPv6 address handling is included but not actively used.
-pub fn process_remote_path(host: &Host<&str>, owner: &String, repo: &String) {
+pub async fn process_remote_path(host: &Host<&str>, owner: &String, repo: &String) {
   match host {
     Host::Domain(domain) => match  *domain {
         "github.com" => {
           println!("Processing GitHub repository...");
-          fetch_github
+          fetch_github(owner, repo).await;
         },
         "gitlab.com" => {
           println!("Processing GitLab repository...");

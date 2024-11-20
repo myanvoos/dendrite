@@ -1,5 +1,8 @@
-use octocrab::{self};
+use octocrab::{self, models::Repository};
 
-async fn fetch_github(owner: &str, repo: &str) {
-  // let repo = octocrab::instance().repos(owner, repo).get();
+pub async fn fetch_github(owner: &str, repo: &str) {
+  let instance = octocrab::instance();
+  let repos = instance.repos(owner, repo);
+  
+
 }
